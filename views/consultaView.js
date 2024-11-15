@@ -29,18 +29,42 @@ class ConsultaView {
             } else { 
                 this.imprimirAgenda(consultas, pacientes);
             }
-        }
-        
-        static imprimirAgenda (consultas, pacientes) {
-            console.log("\n--------------------------------------------------------------");
-            console.log("Data\t\tH.Ini\tH.Fim\tTempo\tNome\t\tDt.Nasc.");
-            console.log("--------------------------------------------------------------");
-            consultas.forEach(consulta => {
-                let paciente = pacientes.find(paciente => paciente.cpf() === consulta.cpfAtrelado());
-                console.log(`${consulta.dataConsulta()}\t${consulta.horaInicio()}\t${consulta.horaFinal()}\t${consulta.tempoConsulta()}\t${paciente.nome()}\t${paciente.dataNascimento()}`);
-            });
-            console.log("--------------------------------------------------------------\n");
-        }
     }
+        
+    static imprimirAgenda (consultas, pacientes) {
+        console.log("\n--------------------------------------------------------------");
+        console.log("Data\t\tH.Ini\tH.Fim\tTempo\tNome\t\tDt.Nasc.");
+        console.log("--------------------------------------------------------------");
+        consultas.forEach(consulta => {
+            let paciente = pacientes.find(paciente => paciente.cpf() === consulta.cpfAtrelado());
+            console.log(`${consulta.dataConsulta()}\t${consulta.horaInicio()}\t${consulta.horaFinal()}\t${consulta.tempoConsulta()}\t${paciente.nome()}\t${paciente.dataNascimento()}`);
+        });
+        console.log("--------------------------------------------------------------\n");
+    }
+
+    static obterCpf() {
+        return prompt("CPF (somente numeros): ");
+    }
+
+    static obterNome() {
+        return prompt("Nome: ");
+    }
+
+    static obterDataConsulta() {
+        return prompt("Data da consulta (DD/MM/AAAA): ");
+    }
+
+    static obterHorario() {
+        return prompt("Hora (HHMM): ");
+    }
+
+    static mensagemSucesso( mensagem ) {
+        console.log(mensagem);
+    }
+
+    static mensagemError( mensagem ) {
+        console.log(mensagem);
+    }
+}
     
-    export { ConsultaView };
+export { ConsultaView };

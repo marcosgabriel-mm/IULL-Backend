@@ -1,5 +1,6 @@
 import { DateTime } from "luxon";
 import { Consulta } from "../models/consulta.js";
+import { ConsultaView } from "../views/consultaView.js";
 import { validarData, validarHora } from "../main.js";
 import PromptSync from "prompt-sync";
 import _ from 'lodash';
@@ -28,71 +29,71 @@ class ConsultaController {
 
         while (true) {
 
-            let cpf = prompt("CPF (somente numeros): ");
+            let cpf = ConsultaView.obterCpf();
             if (!pacienteController.verificarCPF(cpf)) {
-                console.log("Erro: paciente não cadastrado");
+                ConsultaView.mensagemError("Erro: paciente não cadastrado");
                 continue;
             }
 
             if (this.#consultas.some(consulta => consulta.cpfAtrelado() === cpf &&  DateTime.fromFormat(consulta.dataConsulta(), 'dd/MM/yyyy') > DateTime.now())) {
-                console.log("Erro: Paciente já possue uma consulta marcada");
+                ConsultaView.mensagemError("Erro: Paciente já possue uma consulta marcada");
                 continue;
             }
             
-            let dataConsulta = prompt("Data da consulta (DD/MM/AAAA): ");
+            let dataConsulta = ConsultaView.obterDataConsulta();
             validarData(dataConsulta);
             
             const [dia, mes, ano] = dataConsulta.split('/');
             if (DateTime.fromObject({ day: dia, month: mes, year: ano }) < DateTime.now()) {
-                console.log("Erro: Precisa ser uma data atual ou futura")
+                ConsultaView.mensagemError("Erro: Precisa ser uma data atual ou futura");
                 continue;
             }
             
-            let horaInicio = prompt("Hora inicial (HHMM): ");
+            let horaInicio = ConsultaView.obterHorario();
             validarHora(horaInicio);
             
             if (this.intervaloTempo(horaInicio)) {
-                console.log("Erro: A consulta precisa ser em intervalos de 15 minutos");
+                ConsultaView.mensagemError("Erro: A consulta precisa ser em intervalos de 15 minutos");
                 continue;
             }
 
             if (this.verificarHorario(horaInicio, dataConsulta)) {
-                console.log("Erro: Já existe uma consulta nesse horario");
+                ConsultaView.mensagemError("Erro: Já existe uma consulta nesse horario");
                 continue;
             }
 
             if (this.horarioFuncionamento(horaInicio)) {
-                console.log("Erro: Horario fora do horario de funcionamento");
+                ConsultaView.mensagemError("Erro: Horario fora do horario de funcionamento");
                 continue;
             }
 
-            let horaFinal = prompt("Hora final (HHMM): ");
+            let horaFinal = ConsultaView.obterHorario();
             validarHora(horaFinal);
             
             if (this.intervaloTempo(horaFinal)) {
-                console.log("Erro: A consulta precisa ser em intervalos de 15 minutos");
+                ConsultaView.mensagemError("Erro: A consulta precisa ser em intervalos de 15 minutos");
                 continue;
             }
 
             if (horaFinal <= horaInicio) {
-                console.log("Erro: O horario final precisa ser maior que o inicial");
+                ConsultaView.mensagemError("Erro: O horario final precisa ser maior que o inicial");
                 continue;
             }
 
             if (this.horarioFuncionamento(horaFinal)) {
-                console.log("Erro: Horario fora do horario de funcionamento");
+                ConsultaView.mensagemError("Erro: Horario fora do horario de funcionamento");
                 continue;
             }
 
             if (this.verificarHorario(horaFinal, dataConsulta)) {
-                console.log("Erro: Já existe uma consulta nesse horario");
+                ConsultaView.mensagemError("Erro: Já existe uma consulta nesse horario");
                 continue;
             }
 
             let consulta = new Consulta(cpf, dataConsulta, this.converteHora(horaInicio), this.converteHora(horaFinal));
             this.#consultas.push(consulta);
             
-            console.log("Agendamento realizado com sucesso!");
+            ConsultaView.mensagemSucesso("Consulta agendada com sucesso!");
             break;
         }
 
@@ -101,27 +102,27 @@ class ConsultaController {
     cancelarConsulta( pacienteController ) {
         while (true) {
 
-            let cpf = prompt("CPF (somente numeros): ");
+            let cpf = ConsultaView.obterCpf();
             if (!pacienteController.verificarCPF(cpf)) {
-                console.log("Erro: paciente não cadastrado");
+                ConsultaView.mensagemError("Erro: paciente não cadastrado");
                 continue;
             }
 
-            let dataConsulta = prompt("Data da consulta (DD/MM/AAAA): ");
+            let dataConsulta = ConsultaView.obterDataConsulta();
             let dataConsultaObj = DateTime.fromFormat(dataConsulta, 'dd/MM/yyyy');
             validarData(dataConsulta);
 
-            let horaInicio = prompt("Hora inicial (HHMM): ");
+            let horaInicio = ConsultaView.obterHorario();
             validarHora(horaInicio);
             
             const consulta = this.#consultas.findIndex(consulta => consulta.cpfAtrelado() === cpf && consulta.dataConsulta() === dataConsulta && consulta.horaInicio() === DateTime.fromFormat(horaInicio, 'HHmm').toFormat('HH:mm').toString());
             if ( consulta !== -1 && dataConsultaObj > DateTime.now() ) {
                 this.#consultas.splice(consulta , 1);
-                console.log("Agendamento cancelado com sucesso!");
+                ConsultaView.mensagemSucesso("Agendamento cancelado com sucesso!");
                 break;
             }
 
-            console.log("Erro: Agendamento não encontrado");
+            ConsultaView.mensagemError("Erro: Não foi possível cancelar o agendamento");
 
         }
 

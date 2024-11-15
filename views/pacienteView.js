@@ -34,6 +34,26 @@ class PacienteView {
 
     }
 
+    static obterCpf() {
+        return prompt("CPF (somente numeros): ");
+    }
+
+    static obterNome() {
+        return prompt("Nome: ");
+    }
+
+    static obterDataNascimento() {
+        return prompt("Data de Nascimento (dd/mm/yyyy): ");
+    }
+
+    static mensagemSucesso( mensagem ) {
+        console.log(mensagem);
+    }
+
+    static mensagemError( mensagem ) {
+        console.log(mensagem);
+    }
+
 }
 
 export { PacienteView };
