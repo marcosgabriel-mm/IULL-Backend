@@ -2,18 +2,21 @@ import { Sequelize } from "sequelize";
 import Paciente from "../models/paciente.js";
 import Consulta from "../models/consulta.js";
 
+import dotenv from 'dotenv';
+dotenv.config();
+
 export default class Database {
 
     #sequelize;
 
     async init() {
         this.#sequelize = new Sequelize({
-            dialect: 'postgres',
-            host: 'localhost',
-            port: 5432,
-            username: 'marcos',
-            password: 'mgmm4103',
-            database: 'consultorio'
+            dialect: process.env.DB_DIALECT,
+            host: process.env.DB_HOST,
+            port: process.env.DB_PORT,
+            username: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_DATABASE
         });
 
         try {
