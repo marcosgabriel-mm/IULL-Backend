@@ -1,0 +1,13 @@
+{
+  "type": "module",
+  "dependencies": {
+    "cpf-cnpj-validator": "^1.0.3",
+    "lodash": "^4.17.21",
+    "luxon": "^3.5.0",
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
+    "prompt-sync": "^4.2.0",
+    "sequelize": "^6.37.5",
+    "sqlite3": "^5.1.7"
+  }
+}
